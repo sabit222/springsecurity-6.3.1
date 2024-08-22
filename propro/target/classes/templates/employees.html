@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список сотрудников и конвертер валют</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        table {
+            margin-top: 20px;
+        }
+        table th, table td {
+            text-align: center;
+        }
+        button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">Список сотрудников</h1>
+    <a href="/employee/new" class="btn btn-primary mb-3">Добавить нового сотрудника</a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Должность</th>
+            <th>Зарплата</th>
+            <th>Дополнительные сведения</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.name}"></td>
+            <td th:text="${employee.position}"></td>
+            <td th:text="${employee.salary}"></td>
+            <td th:text="${employee.feature}"></td>
+            <td>
+                <a th:href="@{/employee/edit/{id}(id=${employee.id})}" class="btn btn-warning btn-sm">Редактировать</a>
+                <form th:action="@{/employee/delete/{id}(id=${employee.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2 class="text-center mt-5">Конвертер валют в тенге</h2>
+    <form action="/employee/convert" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <div class="form-group">
+            <label for="baseCurrency">Исходная валюта:</label>
+            <select id="baseCurrency" name="baseCurrency" class="form-control" required>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="RUB">RUB</option>
+                <!-- Добавьте другие валюты по необходимости -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Сумма:</label>
+            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Конвертировать</button>
+    </form>
+
+    <div class="result mt-4" th:if="${result != null}">
+        <h3 class="text-center">Результат конвертации</h3>
+        <p class="text-center" th:text="'Сумма ' + ${amount} + ' ' + ${baseCurrency} + ' равна ' + ${result} + ' KZT'"></p>
+    </div>
+
+    <div class="alert alert-danger mt-3" role="alert" th:if="${error != null}" th:text="${error}"></div>
+
+    <!-- График -->
+    <h2 class="text-center mt-5">Изменение курса USD к KZT</h2>
+    <canvas id="currencyChart" width="400" height="200"></canvas>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('currencyChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'Курс USD к KZT',
+                    data: [1, 1.1, 1.05, 1.2, 1.15, 1.3, 1.25],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

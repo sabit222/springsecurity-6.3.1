@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${employee.id} != null ? 'Edit Employee' : 'New Employee'">Employee Form</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 th:text="${employee.id} != null ? 'Edit Employee' : 'New Employee'"></h1>
+
+  <form th:action="@{/employee}" th:object="${employee}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div class="form-group">
+      <label for="name">Имя:</label>
+      <input type="text" id="name" th:field="*{name}" />
+    </div>
+
+    <div class="form-group">
+      <label for="position">Должность:</label>
+      <input type="text" id="position" th:field="*{position}" />
+    </div>
+
+    <div class="form-group">
+      <label for="salary">Зарплата:</label>
+      <input type="number" id="salary" th:field="*{salary}" />
+    </div>
+
+    <div class="form-group">
+      <label for="feature">Дополнительные сведения:</label>
+      <input type="text" id="feature" th:field="*{feature}" />
+    </div>
+
+    <div class="form-group">
+      <button type="submit">Сохранить</button>
+    </div>
+  </form>
+
+  <a href="/employee">Вернуться к списку сотрудников</a>
+</div>
+</body>
+</html>
